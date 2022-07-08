@@ -1,0 +1,9 @@
+#!/bin/sh
+
+case $1 in
+    *)
+        docker-compose -f docker-compose.yml $@
+        ;;
+esac
+
+exit 0

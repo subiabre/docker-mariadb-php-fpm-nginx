@@ -1,38 +1,32 @@
-version: '3.7'
+version: '3'
 
 services:
-  db:
-    container_name: app-db
-    image: mariadb:10.5.5
-    command: --default-authentication-plugin=mysql_native_password
-    environment:
-      - MYSQL_ALLOW_EMPTY_PASSWORD=true
-    ports:
-      - '3306:3306'
-    volumes:
-      - db-data:/var/lib/mysql
-
   php:
-    container_name: app-php
     build: docker/php
-    ports:
-      - '9000:9000'
+    container_name: app-php
     volumes:
       - ./app:/app
-    depends_on:
-      - db
 
   nginx:
-    container_name: app-web
-    image: nginx:stable-alpine
-    ports:
-      - '8080:80'
+    image: nginx:stable-bullseye
+    container_name: app-nginx
     volumes:
       - ./app:/app
       - ./docker/nginx/conf.d:/etc/nginx/conf.d
-    depends_on:
-      - db
-      - php
+    ports:
+      - "${APP_HTTP_PORT:-8080}:80"
+      - "${APP_HTTPS_PORT:-8433}:433"
+
+  mariadb:
+    image: mariadb:10.11
+    container_name: app-mariadb
+    volumes:
+      - mariadb-data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD:-!ChangeMe!}
+      MYSQL_PASSWORD: ${DB_PASSWORD:-!ChangeMe!}
+      MYSQL_DATABASE: ${DB_DATABASE:-app}
+      MYSQL_USER: ${DB_USER:-app}
 
 volumes:
-  db-data:
+  mariadb-data:

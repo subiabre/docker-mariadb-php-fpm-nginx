@@ -1,16 +1,22 @@
-FROM php:8.1-fpm
+FROM php:8.2-fpm
 
+# System dependencies
 RUN apt update && apt install -y \
-    zlib1g-dev g++ git libicu-dev zip libzip-dev zip
+    curl
 
+# PHP zip extension
+RUN apt install -y \
+    libzip-dev zip unzip \
+    && docker-php-ext-install \
+    zip
+
+# PHP extensions, standalone
 RUN docker-php-ext-install \
-    intl opcache pdo pdo_mysql
+    opcache pdo pdo_mysql
+RUN pecl install apcu xdebug \
+    && docker-php-ext-enable apcu xdebug
 
-RUN pecl install apcu \
-    && docker-php-ext-enable apcu \
-    && docker-php-ext-configure zip \
-    && docker-php-ext-install zip
+# Composer
+COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
 
 WORKDIR /app
-
-COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer

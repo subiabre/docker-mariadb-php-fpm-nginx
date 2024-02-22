@@ -7,6 +7,7 @@ services:
     container_name: app-php
     volumes:
       - ./app:/app
+      - ./docker/php/conf.d/opcache.ini:/usr/local/etc/php/conf.d/opcache.ini:ro
 
   nginx:
     image: nginx:${NGINX_VERSION:-1.24}

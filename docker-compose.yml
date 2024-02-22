@@ -1,14 +1,15 @@
-version: '3'
-
 services:
   php:
-    build: docker/php
+    build:
+      context: docker/php
+      args:
+        PHP_VERSION: ${PHP_VERSION:-8.2}
     container_name: app-php
     volumes:
       - ./app:/app
 
   nginx:
-    image: nginx:stable-bullseye
+    image: nginx:${NGINX_VERSION:-1.24}
     container_name: app-nginx
     volumes:
       - ./app:/app
@@ -18,7 +19,7 @@ services:
       - "${APP_HTTPS_PORT:-8433}:433"
 
   mariadb:
-    image: mariadb:10.11
+    image: mariadb:${MARIADB_VERSION:-10.11}
     container_name: app-mariadb
     volumes:
       - mariadb-data:/var/lib/mysql

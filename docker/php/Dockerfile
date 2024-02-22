@@ -1,4 +1,6 @@
-FROM php:8.2-fpm
+ARG PHP_VERSION
+
+FROM php:${PHP_VERSION}-fpm
 
 # System dependencies
 RUN apt update && apt install -y \

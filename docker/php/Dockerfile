@@ -15,8 +15,12 @@ RUN apt install -y \
 # PHP extensions, standalone
 RUN docker-php-ext-install \
     opcache pdo pdo_mysql
-RUN pecl install apcu xdebug \
-    && docker-php-ext-enable apcu xdebug
+
+# APCU & XDebug
+RUN pecl install \
+    apcu xdebug \
+    && docker-php-ext-enable \
+    apcu xdebug
 
 # Composer
 COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer

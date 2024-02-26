@@ -6,21 +6,33 @@ FROM php:${PHP_VERSION}-fpm
 RUN apt update && apt install -y \
     curl
 
-# PHP zip extension
-RUN apt install -y \
-    libzip-dev zip unzip \
-    && docker-php-ext-install \
-    zip
+# PHP extensions
 
-# PHP extensions, standalone
+## OPcache
 RUN docker-php-ext-install \
-    opcache pdo pdo_mysql
+    opcache
 
 # APCU & XDebug
 RUN pecl install \
-    apcu xdebug \
-    && docker-php-ext-enable \
-    apcu xdebug
+    apcu \
+&& docker-php-ext-enable \
+    apcu
+
+## XDebug
+RUN pecl install \
+    xdebug \
+&& docker-php-ext-enable \
+    xdebug
+
+## PDO & mysql
+RUN docker-php-ext-install \
+    pdo pdo_mysql
+
+# Zip
+RUN apt install -y \
+    libzip-dev zip unzip \
+&& docker-php-ext-install \
+    zip
 
 # Composer
 COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer

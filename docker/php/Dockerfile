@@ -8,9 +8,16 @@ RUN apt update && apt install -y \
 
 # PHP extensions
 
-## Universal
+## XML
+RUN apt install -y \
+    libxml2-dev
 RUN docker-php-ext-install \
-    xml \
+    xml
+
+## Mbstring
+RUN apt install -y \
+    libonig-dev
+RUN docker-php-ext-install \
     mbstring
 
 ## PDO & mysql
